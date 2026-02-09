@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaskManagementSystem.Data.Models\TaskManagementSystem.Data.Models.csproj" />
+    <ProjectReference Include="..\TaskManagementSystem.Data\TaskManagementSystem.Data.csproj" />
+    <ProjectReference Include="..\TaskManagementSystem.ViewModels\TaskManagementSystem.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>

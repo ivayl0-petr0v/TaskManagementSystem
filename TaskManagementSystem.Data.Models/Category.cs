@@ -1,0 +1,18 @@
+﻿using System.ComponentModel.DataAnnotations;
+using static TaskManagementSystem.GCommon.ValidationConstants;
+
+namespace TaskManagementSystem.Data.Models
+{
+    public class Category
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        [MaxLength(CategoryNameMaxLength)]
+        public string Name { get; set; } = null!;
+
+        public virtual ICollection<Project> Projects { get; set; }
+            = new List<Project>();
+    }
+}

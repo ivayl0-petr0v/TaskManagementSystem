@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Data/">
+    <Project Path="TaskManagementSystem.Data.Models/TaskManagementSystem.Data.Models.csproj" />
+    <Project Path="TaskManagementSystem.Data/TaskManagementSystem.Data.csproj" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="TaskManagementSystem.Services.Core/TaskManagementSystem.Services.Core.csproj" />
+  </Folder>
+  <Folder Name="/Web/">
+    <Project Path="TaskManagementSystem.ViewModels/TaskManagementSystem.ViewModels.csproj" />
+    <Project Path="TaskManagementSystem.Web/TaskManagementSystem.Web.csproj" />
+  </Folder>
+  <Project Path="TaskManagementSystem.GCommon/TaskManagementSystem.GCommon.csproj" />
+</Solution>

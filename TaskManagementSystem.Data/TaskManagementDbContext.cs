@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TaskManagementSystem.Data.Configurations;
 using TaskManagementSystem.Data.Models;
+using TaskManagementSystem.Web.Data.Migrations;
 
 namespace TaskManagementSystem.Web.Data
 {
-    public class TaskManagementDbContext : IdentityDbContext
+    public class TaskManagementDbContext : IdentityDbContext<ApplicationUser>
     {
         public TaskManagementDbContext(DbContextOptions<TaskManagementDbContext> dbContextOptions)
             : base(dbContextOptions)
@@ -19,7 +21,10 @@ namespace TaskManagementSystem.Web.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(TaskManagementDbContext).Assembly);
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new StatusConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            //modelBuilder.ApplyConfiguration(new ProjectConfiguration());
         }
     }
 }

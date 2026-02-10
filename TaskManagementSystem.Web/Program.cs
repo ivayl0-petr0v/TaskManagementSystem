@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TaskManagementSystem.Data.Models;
 using TaskManagementSystem.Web.Data;
 
 namespace TaskManagementSystem.Web
@@ -21,7 +22,7 @@ namespace TaskManagementSystem.Web
 
             // Register Identity in DI
             builder.Services
-                .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<TaskManagementDbContext>();
             builder.Services
                 .AddControllersWithViews();

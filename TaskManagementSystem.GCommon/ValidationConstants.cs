@@ -15,5 +15,8 @@ namespace TaskManagementSystem.GCommon
         //Task
         public const int TaskTitleMaxLength = 100;
         public const int TaskDescriptionMaxLength = 100;
+        //ApplicationUser
+        public const int AppUserFirstNameMaxLength = 100;
+        public const int AppUserLastNameMaxLength = 100;
     }
 }

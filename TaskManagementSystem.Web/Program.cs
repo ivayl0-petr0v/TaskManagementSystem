@@ -12,16 +12,19 @@ namespace TaskManagementSystem.Web
 
             // Add services to the container.
             string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            
+
             //  Register DbContext in DI
-            builder.Services.AddDbContext<TaskManagementDbContext>(options =>
-                options.UseSqlServer(connectionString));
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            builder.Services
+                .AddDbContext<TaskManagementDbContext>(options => options.UseSqlServer(connectionString));
+            builder.Services
+                .AddDatabaseDeveloperPageExceptionFilter();
 
             // Register Identity in DI
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services
+                .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<TaskManagementDbContext>();
-            builder.Services.AddControllersWithViews();
+            builder.Services
+                .AddControllersWithViews();
 
             WebApplication app = builder.Build();
 

@@ -6,8 +6,8 @@ namespace TaskManagementSystem.Web.Data
 {
     public class TaskManagementDbContext : IdentityDbContext
     {
-        public TaskManagementDbContext(DbContextOptions<TaskManagementDbContext> options)
-            : base(options)
+        public TaskManagementDbContext(DbContextOptions<TaskManagementDbContext> dbContextOptions)
+            : base(dbContextOptions)
         {
         }
 
@@ -15,9 +15,11 @@ namespace TaskManagementSystem.Web.Data
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Status> Statuses { get; set; } = null!;
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(TaskManagementDbContext).Assembly);
         }
     }
 }

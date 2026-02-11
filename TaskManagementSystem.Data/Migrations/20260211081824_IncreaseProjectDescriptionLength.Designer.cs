@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem.Web.Data;
 
@@ -11,9 +12,11 @@ using TaskManagementSystem.Web.Data;
 namespace TaskManagementSystem.Web.Data.Migrations
 {
     [DbContext(typeof(TaskManagementDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260211081824_IncreaseProjectDescriptionLength")]
+    partial class IncreaseProjectDescriptionLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,7 +241,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4d7e10e6-5dc1-40aa-b3dd-0598c49cb4e8",
+                            ConcurrencyStamp = "8c8bc7cb-d668-4f71-8961-2a685c03397f",
                             Email = "creativo@examle.com",
                             EmailConfirmed = false,
                             FirstName = "James",
@@ -246,9 +249,9 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "CREATIVO@EXAMLE.COM",
                             NormalizedUserName = "CREATIVO",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBfcOCrJhV7ZxbkXgADRqZJIWGJnGdyn+SPM3Tz9ayY5YLdC1w2gWa2cXWVdpMkq4w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEILjen+hjJyU/dKCopkQl0iizPZqGq84SsbvrcYZi1d14qmUWQIinLDw/eNAC8VIwQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "dd528dfe-b751-4c1d-a5c4-1fb14f0e3ea8",
+                            SecurityStamp = "bc3302d7-71c3-48e3-b85d-4b53f1044d80",
                             TwoFactorEnabled = false,
                             UserName = "creativo"
                         },
@@ -256,7 +259,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                         {
                             Id = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "680d3bd5-2da8-4bb4-b0bc-47ac33f8c096",
+                            ConcurrencyStamp = "ae3e21ed-7ed0-4855-b37b-888ce83825a6",
                             Email = "cruzer@example.com",
                             EmailConfirmed = false,
                             FirstName = "John",
@@ -264,9 +267,9 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "CRUZER@EXAMPLE.COM",
                             NormalizedUserName = "CRUZER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAWLQZtNE/vHhU/9sehwmpSu+GtlK0giCAKuatxtnwMPg5R7iQ6jV9jEXr91qnaHfA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMiRiHF2pStSpiCL5qtmeKRJ7erfdk52yaMXXPZBX2FM4fx/EZc0jSVOTsPVkMNoTw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1c8c5b1c-ee27-4117-ad57-46e7ecdc6ccf",
+                            SecurityStamp = "75d3d362-b636-49c9-8099-7a24a3c86e70",
                             TwoFactorEnabled = false,
                             UserName = "cruzer"
                         });
@@ -346,38 +349,6 @@ namespace TaskManagementSystem.Web.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Projects");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 2,
-                            Description = "Designing the UI components and integrating third-party APIs for calorie tracking and workout logging.",
-                            DueDateTime = new DateTime(2026, 2, 18, 8, 20, 0, 580, DateTimeKind.Utc).AddTicks(5963),
-                            StatusId = 1,
-                            Title = "Fitness Mobile App Development",
-                            UserId = "dea12856-c198-4129-b3f3-b893d8395082"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = 3,
-                            Description = "Completing the final capstone project on image recognition and attending the peer-review session.",
-                            DueDateTime = new DateTime(2026, 2, 25, 8, 20, 0, 580, DateTimeKind.Utc).AddTicks(5973),
-                            StatusId = 2,
-                            Title = "AI & Machine Learning Certification",
-                            UserId = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryId = 1,
-                            Description = "Revamping the homepage and product pages to enhance user experience and increase conversion rates.",
-                            DueDateTime = new DateTime(2026, 2, 21, 8, 20, 0, 580, DateTimeKind.Utc).AddTicks(5975),
-                            StatusId = 3,
-                            Title = "E-commerce Website Redesign",
-                            UserId = "dea12856-c198-4129-b3f3-b893d8395082"
-                        });
                 });
 
             modelBuilder.Entity("TaskManagementSystem.Data.Models.Status", b =>

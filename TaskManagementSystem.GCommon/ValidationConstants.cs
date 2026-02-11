@@ -12,9 +12,9 @@ namespace TaskManagementSystem.GCommon
         public const int StatusNameMaxLength = 30;
         //Category
         public const int CategoryNameMaxLength = 50;
-        //Task
-        public const int TaskTitleMaxLength = 100;
-        public const int TaskDescriptionMaxLength = 100;
+        //Project
+        public const int ProjectTitleMaxLength = 100;
+        public const int ProjectDescriptionMaxLength = 1000;
         //ApplicationUser
         public const int AppUserFirstNameMaxLength = 100;
         public const int AppUserLastNameMaxLength = 100;

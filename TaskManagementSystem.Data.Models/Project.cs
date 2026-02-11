@@ -11,10 +11,10 @@ namespace TaskManagementSystem.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(TaskTitleMaxLength)]
+        [MaxLength(ProjectTitleMaxLength)]
         public string Title { get; set; } = null!;
 
-        [MaxLength(TaskDescriptionMaxLength)]
+        [MaxLength(ProjectDescriptionMaxLength)]
         public string? Description { get; set; }
 
         [Required]

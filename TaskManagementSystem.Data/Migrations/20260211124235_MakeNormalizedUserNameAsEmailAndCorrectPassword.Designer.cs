@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem.Web.Data;
 
@@ -11,9 +12,11 @@ using TaskManagementSystem.Web.Data;
 namespace TaskManagementSystem.Web.Data.Migrations
 {
     [DbContext(typeof(TaskManagementDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260211124235_MakeNormalizedUserNameAsEmailAndCorrectPassword")]
+    partial class MakeNormalizedUserNameAsEmailAndCorrectPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,17 +241,17 @@ namespace TaskManagementSystem.Web.Data.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9ec16974-7f58-4a66-a03e-164f0c1151bc",
+                            ConcurrencyStamp = "1a547031-0c4a-4568-b33a-c5798c6e7a82",
                             Email = "creativo@examle.com",
-                            EmailConfirmed = true,
+                            EmailConfirmed = false,
                             FirstName = "James",
                             LastName = "Smith",
                             LockoutEnabled = false,
                             NormalizedEmail = "CREATIVO@EXAMLE.COM",
                             NormalizedUserName = "CREATIVO@EXAMLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMvuSVGd5hZj9HGMjU/BAr2qxGxvgB8uhMR9IWdfC61APk8xf89NXsHH+sDdgwf0yQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELI1tsKcGcUFgIbmvdKc9oMt1I7dR8URN14fEPNv9LneCXWdv5XcUTtBw07ly3vDBg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b077c76b-95f2-417c-acf5-1a2e5610f274",
+                            SecurityStamp = "32e52ecd-6e6b-45ab-88f0-f4a679966384",
                             TwoFactorEnabled = false,
                             UserName = "creativo@examle.com"
                         },
@@ -256,17 +259,17 @@ namespace TaskManagementSystem.Web.Data.Migrations
                         {
                             Id = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "873783dd-beaa-46ae-8b75-701e303c9d25",
+                            ConcurrencyStamp = "4534d749-0435-44ac-a6a9-96d97ae7fe7a",
                             Email = "cruzer@example.com",
-                            EmailConfirmed = true,
+                            EmailConfirmed = false,
                             FirstName = "John",
                             LastName = "Burrows",
                             LockoutEnabled = false,
                             NormalizedEmail = "CRUZER@EXAMPLE.COM",
                             NormalizedUserName = "CRUZER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMkC7OTn33w/jFdGuN6C370fGwn2c83BhOK/TeGsbFKsaxbEo/e5OJZlEGGW++zx3w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEC7b7iXxwhHmnqNL8DrDyxCnCs8ydeMKI0VLHNZAvJJejQT5M7kyLx9P/RfKQUU/ug==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6d801d62-4cf1-4166-a5ad-a37dd0332414",
+                            SecurityStamp = "7376858b-fdfb-43de-9863-801b32ccf8f4",
                             TwoFactorEnabled = false,
                             UserName = "cruzer@example.com"
                         });
@@ -353,7 +356,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             Id = 1,
                             CategoryId = 2,
                             Description = "Designing the UI components and integrating third-party APIs for calorie tracking and workout logging.",
-                            DueDateTime = new DateTime(2026, 2, 18, 12, 54, 37, 117, DateTimeKind.Utc).AddTicks(8592),
+                            DueDateTime = new DateTime(2026, 2, 18, 12, 42, 35, 76, DateTimeKind.Utc).AddTicks(8649),
                             StatusId = 1,
                             Title = "Fitness Mobile App Development",
                             UserId = "dea12856-c198-4129-b3f3-b893d8395082"
@@ -363,7 +366,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             Id = 2,
                             CategoryId = 3,
                             Description = "Completing the final capstone project on image recognition and attending the peer-review session.",
-                            DueDateTime = new DateTime(2026, 2, 25, 12, 54, 37, 117, DateTimeKind.Utc).AddTicks(8694),
+                            DueDateTime = new DateTime(2026, 2, 25, 12, 42, 35, 76, DateTimeKind.Utc).AddTicks(8660),
                             StatusId = 2,
                             Title = "AI & Machine Learning Certification",
                             UserId = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"
@@ -373,7 +376,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             Id = 3,
                             CategoryId = 1,
                             Description = "Revamping the homepage and product pages to enhance user experience and increase conversion rates.",
-                            DueDateTime = new DateTime(2026, 2, 21, 12, 54, 37, 117, DateTimeKind.Utc).AddTicks(8696),
+                            DueDateTime = new DateTime(2026, 2, 21, 12, 42, 35, 76, DateTimeKind.Utc).AddTicks(8662),
                             StatusId = 3,
                             Title = "E-commerce Website Redesign",
                             UserId = "dea12856-c198-4129-b3f3-b893d8395082"

@@ -1,0 +1,57 @@
+﻿@model ProjectListViewModel
+
+@{
+	ViewBag.Title = "Projects";
+}
+
+<div class="container py-5">
+
+	<div class="mb-5">
+		<h2 class="fw-bold mb-4 text-dark">
+			<i class="bi bi-person-workspace"></i> My Projects
+		</h2>
+
+		<div class="row">
+			@if (!Model.MyProjects.Any())
+			{
+				<div class="col-12">
+					<p class="text-black-50">You haven't created any projects yet.</p>
+					<a asp-action="Create" class="btn btn-dark py-2 rounded-3 fw-medium">Create one now</a>
+				</div>
+			}
+			else
+			{
+				@foreach (ProjectAllViewModel myProject in Model.MyProjects)
+				{
+					<div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+						<partial name="_ProjectCardPartial" model="myProject" />
+					</div>
+				}
+			}
+		</div>
+	</div>
+
+	<hr class="my-5" style="height: 2px; background-color: #ccc; border: none;" />
+
+	<div>
+		<h2 class="fw-bold mb-4 text-dark">
+			<i class="bi bi-people-fill"></i> All Other Projects
+		</h2>
+
+		<div class="row">
+			@if (!Model.OtherProjects.Any())
+			{
+				<p class="text-muted">No other projects available.</p>
+			}
+			else
+			{
+				@foreach (ProjectAllViewModel otherProject in Model.OtherProjects)
+				{
+					<div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+						<partial name="_ProjectCardPartial" model="otherProject" />
+					</div>
+				}
+			}
+		</div>
+	</div>
+</div>

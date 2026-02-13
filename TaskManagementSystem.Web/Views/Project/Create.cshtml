@@ -1,0 +1,97 @@
+﻿@model CreateProjectInputModel
+
+@{
+	ViewBag.Title = "Create project";
+}
+
+<div class="container d-flex justify-content-center align-items-center py-5">
+	<div class="container py-5">
+		<div class="row justify-content-center mb-4">
+			<div class="col-lg-8 text-start">
+				<h1 class="fw-bold display-6 m-0">Create a project</h1>
+				<p class="text-muted">Fill in the information to set up your new project.</p>
+			</div>
+		</div>
+
+		<div class="row justify-content-center">
+			<div class="col-lg-8">
+				<div class="card border-0 shadow-sm p-4 w-100" style="border-radius: 20px;">
+					<form asp-controller="Project" asp-action="Create" method="post">
+						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+						<div class="mb-3">
+							<label asp-for="CategoryId" class="form-label fw-bold small">Category</label>
+							<select asp-for="CategoryId" class="form-select py-2" aria-required="true" style="border-radius: 8px;">
+								<option value="" selected="selected">Select category...</option>
+								@foreach (var category in Model.Categories)
+								{
+									<option value="@category.Id">@category.Name</option>
+								}
+							</select>
+							<span asp-validation-for="CategoryId" class="text-danger small"></span>
+						</div>
+
+						<div class="mb-3">
+							<label asp-for="Title" class="form-label fw-bold small">Title</label>
+							<input asp-for="Title" class="form-control py-2" aria-required="true" placeholder="Enter title..." style="border-radius: 8px;" />
+							<span asp-validation-for="Title" class="text-danger small"></span>
+						</div>
+
+						<div class="mb-3">
+							<label asp-for="Description" class="form-label fw-bold small">Description</label>
+							<textarea asp-for="Description" class="form-control" placeholder="Enter description..." rows="5" style="border-radius: 8px; resize: none;"></textarea>
+							<span asp-validation-for="Description" class="text-danger small"></span>
+						</div>
+
+						@* <div class="mb-3">
+							<label asp-for="UserId" class="form-label fw-bold small">User</label>
+							<select asp-for="UserId" class="form-select py-2" aria-required="true" style="border-radius: 8px;"
+									asp-items="@(new SelectList(Model.Users, "UserId", "UserFullName"))">
+								<option value="">Select user...</option>
+							</select>
+							<span asp-validation-for="UserId" class="text-danger small"></span>
+						</div> *@
+
+						<div class="row g-3 mb-4">
+							<div class="col-md-6">
+								<label asp-for="DueDate" class="form-label fw-bold small">Due Date</label>
+								<input asp-for="DueDate"
+									   type="date"
+									   class="form-control py-2"
+									   placeholder="@DateTime.Now"
+									   aria-required="true"
+									   style="border-radius: 8px;"
+									   value="@DateTime.Now" />
+								<span asp-validation-for="DueDate" class="text-danger small"></span>
+							</div>
+							<div class="col-md-6">
+								<label asp-for="StatusId" class="form-label fw-bold small">Status</label>
+								<select asp-for="StatusId" class="form-select py-2" aria-required="true" style="border-radius: 8px;">
+									<option value="" selected="selected">Select status...</option>
+									@foreach (var status in Model.Statuses)
+									{
+										<option value="@status.Id">@status.Name</option>
+									}
+								</select>
+								<span asp-validation-for="StatusId" class="text-danger small"></span>
+							</div>
+						</div>
+
+						<div class="row g-3">
+							<div class="col-6">
+								<a asp-controller="Project" asp-action="All" class="btn btn-light w-100 py-2 border fw-bold" style="border-radius: 10px; background-color: #E9E9E9;">Cancel</a>
+							</div>
+							<div class="col-6">
+								<button type="submit" class="btn btn-dark w-100 py-2 fw-bold" style="border-radius: 10px;">Create</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

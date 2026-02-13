@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem.Web.Data;
 
@@ -11,9 +12,11 @@ using TaskManagementSystem.Web.Data;
 namespace TaskManagementSystem.Web.Data.Migrations
 {
     [DbContext(typeof(TaskManagementDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260211123918_MakeUserNameAndEmailEqual")]
+    partial class MakeUserNameAndEmailEqual
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,17 +241,17 @@ namespace TaskManagementSystem.Web.Data.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9ec16974-7f58-4a66-a03e-164f0c1151bc",
+                            ConcurrencyStamp = "5a92b4c0-f9b9-4daa-b8f8-1847d79fda5e",
                             Email = "creativo@examle.com",
-                            EmailConfirmed = true,
+                            EmailConfirmed = false,
                             FirstName = "James",
                             LastName = "Smith",
                             LockoutEnabled = false,
                             NormalizedEmail = "CREATIVO@EXAMLE.COM",
-                            NormalizedUserName = "CREATIVO@EXAMLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMvuSVGd5hZj9HGMjU/BAr2qxGxvgB8uhMR9IWdfC61APk8xf89NXsHH+sDdgwf0yQ==",
+                            NormalizedUserName = "CREATIVO",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAHdBEAKX99SE07BLK7h3WOhl9nB8ikl1m7G4FnEftH0K7e3K5YVRUewtMzMaa0FdQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b077c76b-95f2-417c-acf5-1a2e5610f274",
+                            SecurityStamp = "7922c276-99b2-4ee2-9495-9d9f1cb8b641",
                             TwoFactorEnabled = false,
                             UserName = "creativo@examle.com"
                         },
@@ -256,17 +259,17 @@ namespace TaskManagementSystem.Web.Data.Migrations
                         {
                             Id = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "873783dd-beaa-46ae-8b75-701e303c9d25",
+                            ConcurrencyStamp = "765f369c-164c-4280-b118-d54b9c565c7d",
                             Email = "cruzer@example.com",
-                            EmailConfirmed = true,
+                            EmailConfirmed = false,
                             FirstName = "John",
                             LastName = "Burrows",
                             LockoutEnabled = false,
                             NormalizedEmail = "CRUZER@EXAMPLE.COM",
-                            NormalizedUserName = "CRUZER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMkC7OTn33w/jFdGuN6C370fGwn2c83BhOK/TeGsbFKsaxbEo/e5OJZlEGGW++zx3w==",
+                            NormalizedUserName = "CRUZER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEODt8eMkg4QIrPA0CWsqKFUnQxmDxZEuIoTbcrP75FpYKoFiMtZnd6BS4jwon9VVVQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6d801d62-4cf1-4166-a5ad-a37dd0332414",
+                            SecurityStamp = "ca603683-91bc-45de-bf19-2b4d3aa0e1ad",
                             TwoFactorEnabled = false,
                             UserName = "cruzer@example.com"
                         });
@@ -353,7 +356,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             Id = 1,
                             CategoryId = 2,
                             Description = "Designing the UI components and integrating third-party APIs for calorie tracking and workout logging.",
-                            DueDateTime = new DateTime(2026, 2, 18, 12, 54, 37, 117, DateTimeKind.Utc).AddTicks(8592),
+                            DueDateTime = new DateTime(2026, 2, 18, 12, 39, 18, 45, DateTimeKind.Utc).AddTicks(4053),
                             StatusId = 1,
                             Title = "Fitness Mobile App Development",
                             UserId = "dea12856-c198-4129-b3f3-b893d8395082"
@@ -363,7 +366,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             Id = 2,
                             CategoryId = 3,
                             Description = "Completing the final capstone project on image recognition and attending the peer-review session.",
-                            DueDateTime = new DateTime(2026, 2, 25, 12, 54, 37, 117, DateTimeKind.Utc).AddTicks(8694),
+                            DueDateTime = new DateTime(2026, 2, 25, 12, 39, 18, 45, DateTimeKind.Utc).AddTicks(4259),
                             StatusId = 2,
                             Title = "AI & Machine Learning Certification",
                             UserId = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"
@@ -373,7 +376,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             Id = 3,
                             CategoryId = 1,
                             Description = "Revamping the homepage and product pages to enhance user experience and increase conversion rates.",
-                            DueDateTime = new DateTime(2026, 2, 21, 12, 54, 37, 117, DateTimeKind.Utc).AddTicks(8696),
+                            DueDateTime = new DateTime(2026, 2, 21, 12, 39, 18, 45, DateTimeKind.Utc).AddTicks(4261),
                             StatusId = 3,
                             Title = "E-commerce Website Redesign",
                             UserId = "dea12856-c198-4129-b3f3-b893d8395082"

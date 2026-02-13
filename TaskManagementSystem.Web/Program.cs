@@ -22,8 +22,12 @@ namespace TaskManagementSystem.Web
 
             // Register Identity in DI
             builder.Services
-                .AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddDefaultIdentity<ApplicationUser>(options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = false;
+                })
                 .AddEntityFrameworkStores<TaskManagementDbContext>();
+
             builder.Services
                 .AddControllersWithViews();
 

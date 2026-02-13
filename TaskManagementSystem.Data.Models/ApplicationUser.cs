@@ -13,5 +13,7 @@ namespace TaskManagementSystem.Data.Models
         [Required]
         [MaxLength(AppUserLastNameMaxLength)]
         public string LastName { get; set; } = null!;
+
+        public string UserFullName => FirstName + " " + LastName;
     }
 }

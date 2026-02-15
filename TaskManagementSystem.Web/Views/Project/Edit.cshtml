@@ -1,22 +1,22 @@
 ﻿@model ProjectInputModel
 
 @{
-	ViewBag.Title = "Create project";
+	ViewBag.Title = "Edit project";
 }
 
 <div class="container d-flex justify-content-center align-items-center py-5">
 	<div class="container py-5">
 		<div class="row justify-content-center mb-4">
 			<div class="col-lg-8 text-start">
-				<h1 class="fw-bold display-6 m-0">Create a project</h1>
-				<p class="text-muted">Fill in the information to set up your new project.</p>
+				<h1 class="fw-bold display-6 m-0">Edit a project</h1>
+				<p class="text-muted">Edit the information for your project.</p>
 			</div>
 		</div>
 
 		<div class="row justify-content-center">
 			<div class="col-lg-8">
 				<div class="card border-0 shadow-sm p-4 w-100" style="border-radius: 20px;">
-					<form asp-controller="Project" asp-action="Create" method="post">
+					<form asp-controller="Project" asp-action="Edit" method="post">
 						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 						<div class="mb-3">
@@ -42,7 +42,7 @@
 							<textarea asp-for="Description" class="form-control" placeholder="Enter description..." rows="5" style="border-radius: 8px; resize: none;"></textarea>
 							<span asp-validation-for="Description" class="text-danger small"></span>
 						</div>
-     
+
 						<div class="row g-3 mb-4">
 							<div class="col-md-6">
 								<label asp-for="DueDate" class="form-label fw-bold small">Due Date</label>
@@ -50,8 +50,7 @@
 									   type="date"
 									   class="form-control py-2"
 									   aria-required="true"
-									   style="border-radius: 8px;"
-									   value="@DateTime.Now" />
+									   style="border-radius: 8px;" />
 								<span asp-validation-for="DueDate" class="text-danger small"></span>
 							</div>
 							<div class="col-md-6">
@@ -72,7 +71,7 @@
 								<a asp-controller="Project" asp-action="All" class="btn btn-light w-100 py-2 border fw-bold" style="border-radius: 10px; background-color: #E9E9E9;">Cancel</a>
 							</div>
 							<div class="col-6">
-								<button type="submit" class="btn btn-dark w-100 py-2 fw-bold" style="border-radius: 10px;">Create</button>
+								<button type="submit" class="btn btn-dark w-100 py-2 fw-bold" style="border-radius: 10px;">Save</button>
 							</div>
 						</div>
 					</form>

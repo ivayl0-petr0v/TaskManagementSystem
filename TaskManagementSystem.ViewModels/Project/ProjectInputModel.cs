@@ -3,7 +3,7 @@
 using System.ComponentModel.DataAnnotations;
 using static TaskManagementSystem.GCommon.ValidationConstants;
 
-public class CreateProjectInputModel
+public class ProjectInputModel
 {
     //Input Data
     [Required]

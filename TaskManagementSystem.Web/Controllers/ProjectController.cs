@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Construction;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using System.Globalization;
-using System.Security.Claims;
 using TaskManagementSystem.Data.Models;
 using TaskManagementSystem.ViewModels.Project;
 using TaskManagementSystem.Web.Data;
@@ -76,7 +73,6 @@ namespace TaskManagementSystem.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-
                 return View(inputModel);
             }
 
@@ -197,14 +193,16 @@ namespace TaskManagementSystem.Web.Controllers
                 .SingleOrDefaultAsync(p => p.Id == id);
             if (projectToEdit == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Project not found.";
+                return RedirectToAction(nameof(All));
             }
 
             string? currentUserId = GetCurrentUserId();
 
             if (projectToEdit.UserId.ToLowerInvariant() != currentUserId?.ToLowerInvariant())
             {
-                return Unauthorized();
+                TempData["ErrorMessage"] = "You are not authorized to edit this project.";
+                return RedirectToAction(nameof(All));
             }
 
             ProjectInputModel projectInputModel = new ProjectInputModel()
@@ -221,6 +219,8 @@ namespace TaskManagementSystem.Web.Controllers
             return View(projectInputModel);
         }
 
+        [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Edit([FromRoute] int id, ProjectInputModel inputModel)
         {
             inputModel.Statuses = await GetSelectProjectStatuses();
@@ -229,12 +229,14 @@ namespace TaskManagementSystem.Web.Controllers
             Project? projectToEdit = await FindProjectById(id);
             if (projectToEdit == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Project not found.";
+                return RedirectToAction(nameof(All));
             }
 
             string? currentUserId = GetCurrentUserId();
             if (projectToEdit.UserId.ToLowerInvariant() != currentUserId?.ToLowerInvariant())
             {
+                TempData["ErrorMessage"] = "You are not authorized to edit this project.";
                 return Unauthorized();
             }
 
@@ -284,6 +286,58 @@ namespace TaskManagementSystem.Web.Controllers
 
                 return View(inputModel);
             }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Project? projectToDelete = await dbContext
+                .Projects
+                .AsNoTracking()
+                .SingleOrDefaultAsync(p => p.Id == id);
+
+            if (projectToDelete == null)
+            {
+                TempData["ErrorMessage"] = "Project not found.";
+                return RedirectToAction(nameof(All));
+            }
+
+            if (projectToDelete.UserId.ToLowerInvariant() != GetCurrentUserId()?.ToLowerInvariant())
+            {
+                TempData["ErrorMessage"] = "You are not authorized to delete this project.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            ProjectDeleteViewModel model = new ProjectDeleteViewModel
+            {
+                Id = projectToDelete.Id,
+                Title = projectToDelete.Title,
+                Description = projectToDelete.Description ?? string.Empty
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            Project? project = await FindProjectById(id);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            if (project.UserId != GetCurrentUserId())
+            {
+                return Unauthorized();
+            }
+
+            dbContext.Projects.Remove(project);
+            await dbContext.SaveChangesAsync();
+
+            return RedirectToAction(nameof(All));
         }
 
         private async Task<Project?> GetProjectWithStatus(int id)

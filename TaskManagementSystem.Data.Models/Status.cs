@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using static TaskManagementSystem.GCommon.ValidationConstants;
 
 namespace TaskManagementSystem.Data.Models

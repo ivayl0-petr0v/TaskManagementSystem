@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManagementSystem.Web.Data;
 
@@ -11,9 +12,11 @@ using TaskManagementSystem.Web.Data;
 namespace TaskManagementSystem.Web.Data.Migrations
 {
     [DbContext(typeof(TaskManagementDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260215130402_ChangeDeleteMethodOfStatusAndCategoryToRestrict")]
+    partial class ChangeDeleteMethodOfStatusAndCategoryToRestrict
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

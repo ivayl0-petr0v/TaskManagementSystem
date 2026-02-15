@@ -64,15 +64,15 @@
 					<div class="col-md-4">
 						<form asp-controller="Project" asp-action="Complete" asp-route-id="@Model.Id" method="post">
 							<button type="submit"
-									class="btn w-100 py-2 fw-bold @(Model.Status == "Completed" ? "btn-secondary" : "btn-dark")"
+									class="btn w-100 py-2 fw-bold @(Model.IsCompleted ? "btn-secondary" : "btn-dark")"
 									style="border-radius: 8px;"
-									@(Model.Status == "Completed" ? "disabled" : "")>
-								
+									disabled="@Model.IsCompleted">
+
 								<span class="material-symbols-outlined align-middle fs-5 me-1">
-									@(Model.Status == "Completed" ? "task_alt" : "check_circle")
+									@(Model.IsCompleted ? "task_alt" : "check_circle")
 								</span>
 
-								@(Model.Status == "Completed" ? "Project Completed" : "Mark as Complete")
+								@(Model.IsCompleted ? "Project Completed" : "Mark as Complete")
 							</button>
 						</form>
 					</div>

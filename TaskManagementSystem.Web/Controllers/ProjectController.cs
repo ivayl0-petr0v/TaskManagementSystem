@@ -145,46 +145,70 @@ namespace TaskManagementSystem.Web.Controllers
                 DueDate = project.DueDateTime.ToString(DateFormat, CultureInfo.InvariantCulture),
                 Status = project.Status.Name,
                 UserFullName = project.User.UserFullName,
-                IsOwner = currentUserId == project.UserId
+                IsOwner = currentUserId == project.UserId,
+                IsCompleted = project.Status.Name == "Completed"
             };
 
             return View(model);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Complete(int projectId)
-        //{
-        //    Project? project = await FindProjectById(projectId);
+        [HttpPost]
+        public async Task<IActionResult> Complete(int id)
+        {
+            Project? project = await GetProjectWithStatus(id);
 
-        //    if (project == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (project == null)
+            {
+                return NotFound();
+            }
 
-        //    if (project.Status.Name != "Completed")
-        //    {
-        //        project.StatusId = (await dbContext.Statuses.SingleOrDefaultAsync(s => s.Name == "Completed"))?.Id ?? project.StatusId;
-        //        await dbContext.SaveChangesAsync();
-        //    }
+            string? currentUserId = GetCurrentUserId();
+            if (project.UserId != currentUserId)
+            {
+                return Unauthorized();
+            }
 
-        //    return RedirectToAction(nameof(Details), new { projectId });
-        //}
+            if (project.Status?.Name != "Completed")
+            {
+                Status? completedStatus = await dbContext
+                    .Statuses
+                    .FirstOrDefaultAsync(s => s.Name == "Completed");
 
-        private async Task<Project?> FindProjectById(int projectId)
+                if (completedStatus != null)
+                {
+                    project.Status = completedStatus;
+
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToAction(nameof(Details), new { id = project.Id });
+        }
+
+        private async Task<Project?> GetProjectWithStatus(int id)
         {
             return await dbContext
-                            .Projects
-                            .FindAsync(projectId);
+                .Projects
+                .Include(p => p.Status)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        private async Task<Project?> FindProjectById(int id)
+        {
+            return await dbContext
+                .Projects
+                .FindAsync(id);
         }
 
         private async Task<Project?> GetCurrentProject(int id)
         {
-            return await dbContext.Projects
-                            .Include(p => p.User)
-                            .Include(p => p.Category)
-                            .Include(p => p.Status)
-                            .AsNoTracking()
-                            .SingleOrDefaultAsync(p => p.Id == id);
+            return await dbContext
+                .Projects
+                .Include(p => p.User)
+                .Include(p => p.Category)
+                .Include(p => p.Status)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(p => p.Id == id);
         }
 
         private async Task<IEnumerable<SelectProjectStatusViewModel>> GetSelectProjectStatuses()

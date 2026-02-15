@@ -3,5 +3,7 @@
     public class ProjectDetailsViewModel : ProjectAllViewModel
     {
         public bool IsOwner { get; set; }
+
+        public bool IsCompleted { get; set; }
     }
 }

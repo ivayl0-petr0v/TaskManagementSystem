@@ -4,24 +4,11 @@ using TaskManagementSystem.Data.Models;
 
 namespace TaskManagementSystem.Data.Configurations
 {
-    public class ProjectConfiguration : IEntityTypeConfiguration<Project>
+    internal class ProjectConfiguration : IEntityTypeConfiguration<Project>
     {
         public void Configure(EntityTypeBuilder<Project> builder)
         {
-            builder
-                .HasOne(p => p.Status)
-                .WithMany(s => s.Projects)
-                .HasForeignKey(p => p.StatusId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder
-                .HasOne(p => p.Category)
-                .WithMany(s => s.Projects)
-                .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder
-                .HasData(
+            builder.HasData(
                 new Project
                 {
                     Id = 1,

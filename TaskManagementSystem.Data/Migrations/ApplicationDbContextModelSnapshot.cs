@@ -238,7 +238,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d76d8ea1-4573-4993-a198-caee797de0eb",
+                            ConcurrencyStamp = "9ec16974-7f58-4a66-a03e-164f0c1151bc",
                             Email = "creativo@examle.com",
                             EmailConfirmed = true,
                             FirstName = "James",
@@ -246,9 +246,9 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "CREATIVO@EXAMLE.COM",
                             NormalizedUserName = "CREATIVO@EXAMLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF8yu+hUiGWE8siKRW3KcZwjdaZZDEVeSs7v6htb3VPqdeX/t8LfJ5oGwaHsMr8Pog==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMvuSVGd5hZj9HGMjU/BAr2qxGxvgB8uhMR9IWdfC61APk8xf89NXsHH+sDdgwf0yQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "04d5091c-37c6-4a21-b935-7ea30d706a5e",
+                            SecurityStamp = "b077c76b-95f2-417c-acf5-1a2e5610f274",
                             TwoFactorEnabled = false,
                             UserName = "creativo@examle.com"
                         },
@@ -256,7 +256,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                         {
                             Id = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "82b07b2b-3654-478b-9d3f-ae4cc4260d5b",
+                            ConcurrencyStamp = "873783dd-beaa-46ae-8b75-701e303c9d25",
                             Email = "cruzer@example.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -264,9 +264,9 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "CRUZER@EXAMPLE.COM",
                             NormalizedUserName = "CRUZER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHHKLHwmxdOlPDTv8jrxa06yh3lL/+I2bPmeD5HU1VB2mQSX3oRJ31/SAuB4SNsWoQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMkC7OTn33w/jFdGuN6C370fGwn2c83BhOK/TeGsbFKsaxbEo/e5OJZlEGGW++zx3w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e9cb3d4c-7600-4ad4-8512-d64b0cf876e5",
+                            SecurityStamp = "6d801d62-4cf1-4166-a5ad-a37dd0332414",
                             TwoFactorEnabled = false,
                             UserName = "cruzer@example.com"
                         });
@@ -353,7 +353,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             Id = 1,
                             CategoryId = 2,
                             Description = "Designing the UI components and integrating third-party APIs for calorie tracking and workout logging.",
-                            DueDateTime = new DateTime(2026, 2, 22, 11, 38, 27, 224, DateTimeKind.Utc).AddTicks(433),
+                            DueDateTime = new DateTime(2026, 2, 18, 12, 54, 37, 117, DateTimeKind.Utc).AddTicks(8592),
                             StatusId = 1,
                             Title = "Fitness Mobile App Development",
                             UserId = "dea12856-c198-4129-b3f3-b893d8395082"
@@ -363,7 +363,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             Id = 2,
                             CategoryId = 3,
                             Description = "Completing the final capstone project on image recognition and attending the peer-review session.",
-                            DueDateTime = new DateTime(2026, 3, 1, 11, 38, 27, 224, DateTimeKind.Utc).AddTicks(443),
+                            DueDateTime = new DateTime(2026, 2, 25, 12, 54, 37, 117, DateTimeKind.Utc).AddTicks(8694),
                             StatusId = 2,
                             Title = "AI & Machine Learning Certification",
                             UserId = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e"
@@ -373,7 +373,7 @@ namespace TaskManagementSystem.Web.Data.Migrations
                             Id = 3,
                             CategoryId = 1,
                             Description = "Revamping the homepage and product pages to enhance user experience and increase conversion rates.",
-                            DueDateTime = new DateTime(2026, 2, 25, 11, 38, 27, 224, DateTimeKind.Utc).AddTicks(444),
+                            DueDateTime = new DateTime(2026, 2, 21, 12, 54, 37, 117, DateTimeKind.Utc).AddTicks(8696),
                             StatusId = 3,
                             Title = "E-commerce Website Redesign",
                             UserId = "dea12856-c198-4129-b3f3-b893d8395082"
@@ -471,13 +471,13 @@ namespace TaskManagementSystem.Web.Data.Migrations
                     b.HasOne("TaskManagementSystem.Data.Models.Category", "Category")
                         .WithMany("Projects")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TaskManagementSystem.Data.Models.Status", "Status")
                         .WithMany("Projects")
                         .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TaskManagementSystem.Data.Models.ApplicationUser", "User")

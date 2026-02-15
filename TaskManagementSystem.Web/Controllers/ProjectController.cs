@@ -10,7 +10,7 @@ using static TaskManagementSystem.GCommon.ApplicationConstants;
 
 namespace TaskManagementSystem.Web.Controllers
 {
-    public class ProjectController : Controller
+    public class ProjectController : BaseController
     {
         private readonly TaskManagementDbContext dbContext;
 
@@ -124,30 +124,67 @@ namespace TaskManagementSystem.Web.Controllers
             return RedirectToAction(nameof(All));
         }
 
-        public async Task<IActionResult> Details(int id)
+        [HttpGet]
+        public async Task<IActionResult> Details(int projectId)
         {
-            //ProjectAllViewModel? projectDetailsViewModel = await dbContext.Projects
-            //    .Include(p => p.Category)
-            //    .Include(p => p.Status)
-            //    .AsNoTracking()
-            //    .Where(p => p.Id == id)
-            //    .Select(p => new ProjectAllViewModel
-            //    {
-            //        Id = p.Id,
-            //        Title = p.Title,
-            //        Description = p.Description,
-            //        Category = p.Category.Name,
-            //        UserFullName = $"{p.User.FirstName} {p.User.LastName}",
-            //        DueDate = p.DueDateTime.ToString(DateFormat, CultureInfo.InvariantCulture),
-            //        Status = p.Status.Name
-            //    })
-            //    .FirstOrDefaultAsync();
-            //if (projectDetailsViewModel == null)
-            //{
-            //    return NotFound();
-            //}
-            //return View(projectDetailsViewModel);
-            return Ok();
+            Project? project = await GetCurrentProject(projectId);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            string? currentUserId = GetCurrentUserId();
+
+            ProjectDetailsViewModel model = new ProjectDetailsViewModel
+            {
+                Id = project.Id,
+                Title = project.Title,
+                Description = project.Description,
+                Category = project.Category.Name,
+                DueDate = project.DueDateTime.ToString(DateFormat, CultureInfo.InvariantCulture),
+                Status = project.Status.Name,
+                UserFullName = project.User.UserFullName,
+                IsOwner = currentUserId == project.UserId
+            };
+
+            return View(model);
+        }
+
+        //[HttpPost]
+        //public async Task<IActionResult> Complete(int projectId)
+        //{
+        //    Project? project = await FindProjectById(projectId);
+
+        //    if (project == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (project.Status.Name != "Completed")
+        //    {
+        //        project.StatusId = (await dbContext.Statuses.SingleOrDefaultAsync(s => s.Name == "Completed"))?.Id ?? project.StatusId;
+        //        await dbContext.SaveChangesAsync();
+        //    }
+
+        //    return RedirectToAction(nameof(Details), new { projectId });
+        //}
+
+        private async Task<Project?> FindProjectById(int projectId)
+        {
+            return await dbContext
+                            .Projects
+                            .FindAsync(projectId);
+        }
+
+        private async Task<Project?> GetCurrentProject(int id)
+        {
+            return await dbContext.Projects
+                            .Include(p => p.User)
+                            .Include(p => p.Category)
+                            .Include(p => p.Status)
+                            .AsNoTracking()
+                            .SingleOrDefaultAsync(p => p.Id == id);
         }
 
         private async Task<IEnumerable<SelectProjectStatusViewModel>> GetSelectProjectStatuses()

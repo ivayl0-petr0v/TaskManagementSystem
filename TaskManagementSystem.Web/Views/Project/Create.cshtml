@@ -42,16 +42,7 @@
 							<textarea asp-for="Description" class="form-control" placeholder="Enter description..." rows="5" style="border-radius: 8px; resize: none;"></textarea>
 							<span asp-validation-for="Description" class="text-danger small"></span>
 						</div>
-
-						@* <div class="mb-3">
-							<label asp-for="UserId" class="form-label fw-bold small">User</label>
-							<select asp-for="UserId" class="form-select py-2" aria-required="true" style="border-radius: 8px;"
-									asp-items="@(new SelectList(Model.Users, "UserId", "UserFullName"))">
-								<option value="">Select user...</option>
-							</select>
-							<span asp-validation-for="UserId" class="text-danger small"></span>
-						</div> *@
-
+     
 						<div class="row g-3 mb-4">
 							<div class="col-md-6">
 								<label asp-for="DueDate" class="form-label fw-bold small">Due Date</label>

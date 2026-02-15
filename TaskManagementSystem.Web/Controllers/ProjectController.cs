@@ -125,9 +125,9 @@ namespace TaskManagementSystem.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int projectId)
+        public async Task<IActionResult> Details(int id)
         {
-            Project? project = await GetCurrentProject(projectId);
+            Project? project = await GetCurrentProject(id);
 
             if (project == null)
             {

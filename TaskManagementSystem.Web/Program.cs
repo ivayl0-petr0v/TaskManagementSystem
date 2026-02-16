@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Data.Models;
+using TaskManagementSystem.Services.Core;
+using TaskManagementSystem.Services.Core.Interfaces;
 using TaskManagementSystem.Web.Data;
 
 namespace TaskManagementSystem.Web
@@ -34,6 +35,8 @@ namespace TaskManagementSystem.Web
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
+
+            builder.Services.AddScoped<IProjectService, ProjectService>();
 
             WebApplication app = builder.Build();
 

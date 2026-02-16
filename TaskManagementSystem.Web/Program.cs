@@ -31,6 +31,10 @@ namespace TaskManagementSystem.Web
             builder.Services
                 .AddControllersWithViews();
 
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
+
             WebApplication app = builder.Build();
 
             // Configure the HTTP request pipeline.

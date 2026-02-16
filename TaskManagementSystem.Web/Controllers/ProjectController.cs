@@ -12,10 +12,12 @@ namespace TaskManagementSystem.Web.Controllers
     public class ProjectController : BaseController
     {
         private readonly TaskManagementDbContext dbContext;
+        private readonly ILogger<ProjectController> logger;
 
-        public ProjectController(TaskManagementDbContext dbContext)
+        public ProjectController(TaskManagementDbContext dbContext, ILogger<ProjectController> logger)
         {
             this.dbContext = dbContext;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -110,13 +112,14 @@ namespace TaskManagementSystem.Web.Controllers
 
                 dbContext.Projects.Add(newProject);
                 dbContext.SaveChanges();
+
+                logger.LogInformation("Project with title {Title} created successfully by user {UserId}", newProject.Title, GetCurrentUserId());
+                TempData["SuccessMessage"] = "Project created successfully.";
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-
+                logger.LogError(ex, "Error creating project for user {UserId}", GetCurrentUserId());
                 ModelState.AddModelError(string.Empty, "An error occurred while creating the project. Please try again.");
-
                 return View(inputModel);
             }
 
@@ -130,7 +133,8 @@ namespace TaskManagementSystem.Web.Controllers
 
             if (project == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Project not found.";
+                return RedirectToAction(nameof(All));
             }
 
             string? currentUserId = GetCurrentUserId();
@@ -158,13 +162,15 @@ namespace TaskManagementSystem.Web.Controllers
 
             if (project == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = "Project not found.";
+                return RedirectToAction(nameof(All));
             }
 
             string? currentUserId = GetCurrentUserId();
             if (project.UserId.ToLowerInvariant() != currentUserId?.ToLowerInvariant())
             {
-                return Unauthorized();
+                TempData["ErrorMessage"] = "You don't have permission to modify this project.";
+                return RedirectToAction(nameof(Details), new { id });
             }
 
             if (project.Status?.Name != "Completed")
@@ -176,8 +182,10 @@ namespace TaskManagementSystem.Web.Controllers
                 if (completedStatus != null)
                 {
                     project.Status = completedStatus;
-
                     await dbContext.SaveChangesAsync();
+
+                    logger.LogInformation("Project {ProjectId} marked as completed by {UserId}.", id, currentUserId);
+                    TempData["SuccessMessage"] = "Project marked as completed! Good job!";
                 }
             }
 
@@ -238,7 +246,7 @@ namespace TaskManagementSystem.Web.Controllers
             if (projectToEdit.UserId.ToLowerInvariant() != currentUserId?.ToLowerInvariant())
             {
                 TempData["ErrorMessage"] = "You are not authorized to edit this project.";
-                return Unauthorized();
+                return RedirectToAction(nameof(Details), new { id });
             }
 
             if (!ModelState.IsValid)
@@ -277,14 +285,14 @@ namespace TaskManagementSystem.Web.Controllers
                 dbContext.Projects.Update(projectToEdit);
                 await dbContext.SaveChangesAsync();
 
+                logger.LogInformation("Project {ProjectId} edited successfully by user {UserId}.", id, currentUserId);
+                TempData["SuccessMessage"] = "Project updated successfully.";
                 return RedirectToAction(nameof(Details), new { id });
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-
+                logger.LogError(ex, "Error editing project {ProjectId} for user {UserId}", id, GetCurrentUserId());
                 ModelState.AddModelError(string.Empty, "An error occurred while updating the project. Please try again.");
-
                 return View(inputModel);
             }
         }
@@ -306,8 +314,8 @@ namespace TaskManagementSystem.Web.Controllers
 
             if (projectToDelete.UserId.ToLowerInvariant() != GetCurrentUserId()?.ToLowerInvariant())
             {
-                TempData["ErrorMessage"] = "You are not authorized to delete this project.";
-                return RedirectToAction(nameof(Details), new { id });
+                TempData["ErrorMessage"] = "You don't have permission to delete this project.";
+                return RedirectToAction(nameof(All));
             }
 
             ProjectDeleteViewModel model = new ProjectDeleteViewModel
@@ -327,16 +335,32 @@ namespace TaskManagementSystem.Web.Controllers
 
             if (project == null)
             {
-                return NotFound();
+                logger.LogWarning("Delete attempt on null project {Id} by user {User}", id, GetCurrentUserId());
+                TempData["ErrorMessage"] = "Project not found.";
+                return RedirectToAction(nameof(Details), new { id });
             }
 
             if (project.UserId != GetCurrentUserId())
             {
-                return Unauthorized();
+                logger.LogWarning("Unauthorized delete attempt on project {Id} by user {User}", id, GetCurrentUserId());
+                TempData["ErrorMessage"] = "You don't have permission to delete this project.";
+                return RedirectToAction(nameof(Details), new { id });
             }
+            try
+            {
+                string title = project.Title;
+                dbContext.Projects.Remove(project);
+                await dbContext.SaveChangesAsync();
 
-            dbContext.Projects.Remove(project);
-            await dbContext.SaveChangesAsync();
+                logger.LogInformation("Project {ProjectId} deleted by {UserId}.", id, GetCurrentUserId());
+                TempData["SuccessMessage"] = $"Project '{title}' was deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error deleting project {ProjectId}.", id);
+                TempData["ErrorMessage"] = "Could not delete the project. Please try again later.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
 
             return RedirectToAction(nameof(All));
         }

@@ -43,6 +43,28 @@
 		</nav>
 	</header>
 	<div class="container">
+		@if (TempData["SuccessMessage"] != null)
+		{
+			<div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mt-3" role="alert" style="border-radius: 12px;">
+				<div class="d-flex align-items-center">
+					<span class="material-symbols-outlined me-2">check_circle</span>
+					@TempData["SuccessMessage"]
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		}
+
+		@if (TempData["ErrorMessage"] != null)
+		{
+			<div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 mt-3" role="alert" style="border-radius: 12px;">
+				<div class="d-flex align-items-center">
+					<span class="material-symbols-outlined me-2">error</span>
+					@TempData["ErrorMessage"]
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		}
+
 		<main role="main" class="pb-3">
 			@RenderBody()
 		</main>
@@ -56,6 +78,11 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
+	<script>
+		setTimeout(function () {
+			$('.alert').fadeOut('slow');
+		}, 4000);
+	</script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

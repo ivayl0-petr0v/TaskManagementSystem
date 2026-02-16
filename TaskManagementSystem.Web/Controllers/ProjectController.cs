@@ -205,8 +205,9 @@ namespace TaskManagementSystem.Web.Controllers
                 return RedirectToAction(nameof(All));
             }
 
-            ProjectInputModel projectInputModel = new ProjectInputModel()
+            ProjectEditInputModel projectInputModel = new ProjectEditInputModel()
             {
+                Id = projectToEdit.Id,
                 Title = projectToEdit.Title,
                 Description = projectToEdit.Description,
                 DueDate = projectToEdit.DueDateTime,
@@ -221,7 +222,7 @@ namespace TaskManagementSystem.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Edit([FromRoute] int id, ProjectInputModel inputModel)
+        public async Task<IActionResult> Edit([FromRoute] int id, ProjectEditInputModel inputModel)
         {
             inputModel.Statuses = await GetSelectProjectStatuses();
             inputModel.Categories = await GetSelectProjectCategories();

@@ -169,10 +169,12 @@ Contributions are welcome! To contribute:
 4. Push to the branch: `git push origin feature/your-feature-name`
 5. Open a Pull Request
 ---
-##📄 License
+## 📄 License
 This project is licensed under the MIT License. See the LICENSE file for details.
+
 ---
-##📬 Contact
+
+## 📬 Contact
 **Ivaylo Petrov** – [GitHub Profile](https://github.com/ivayl0-petr0v)
 
 Project Link: [https://github.com/ivayl0-petr0v/TaskManagementSystem](https://github.com/ivayl0-petr0v/TaskManagementSystem.git)

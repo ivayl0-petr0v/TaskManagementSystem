@@ -17,7 +17,6 @@ namespace TaskManagementSystem.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> All()
         {
             string currentUserId = GetCurrentUserId()!;
@@ -35,7 +34,6 @@ namespace TaskManagementSystem.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Create()
         {
             ProjectInputModel model = await projectService
@@ -45,7 +43,6 @@ namespace TaskManagementSystem.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Create(ProjectInputModel inputModel)
         {
             if (!ModelState.IsValid)
@@ -129,7 +126,6 @@ namespace TaskManagementSystem.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             ProjectEditInputModel? model = await projectService
@@ -145,7 +141,6 @@ namespace TaskManagementSystem.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Edit([FromRoute] int id, ProjectEditInputModel inputModel)
         {
             if (!ModelState.IsValid)
@@ -185,7 +180,6 @@ namespace TaskManagementSystem.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var model = await projectService

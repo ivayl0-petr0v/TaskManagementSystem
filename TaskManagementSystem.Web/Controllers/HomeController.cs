@@ -16,10 +16,10 @@ namespace TaskManagementSystem.Web.Controllers
 
         public IActionResult Index()
         {
-            if(User.Identity?.IsAuthenticated ?? false)
-            {
-                return RedirectToAction("All", "Project");
-            }
+            //if (User.Identity?.IsAuthenticated ?? false)
+            //{
+            //    return RedirectToAction("All", "Project");
+            //}
             return View();
         }
 

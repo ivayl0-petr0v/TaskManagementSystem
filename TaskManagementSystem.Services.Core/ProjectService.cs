@@ -141,18 +141,6 @@ namespace TaskManagementSystem.Services.Core
                 throw new UnauthorizedAccessException("You are not the owner of this project.");
             }
 
-            //bool statusExists = await dbContext
-            //    .Statuses
-            //    .AnyAsync(s => s.Id == inputModel.StatusId);
-            //bool categoryExists = await dbContext
-            //    .Categories
-            //    .AnyAsync(c => c.Id == inputModel.CategoryId);
-
-            //if (!statusExists || !categoryExists)
-            //{
-            //    throw new ArgumentException("Invalid status and category.");
-            //}
-
             project.Title = inputModel.Title;
             project.Description = inputModel.Description;
             project.DueDateTime = inputModel.DueDate;

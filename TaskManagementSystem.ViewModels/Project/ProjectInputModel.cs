@@ -24,17 +24,10 @@ public class ProjectInputModel
     [Required]
     public int CategoryId { get; set; }
 
-    //[Required]
-    //public string UserId { get; set; } = null!;
-
     //Output Data
     public IEnumerable<SelectProjectStatusViewModel> Statuses { get; set; }
         = new List<SelectProjectStatusViewModel>();
 
     public IEnumerable<SelectProjectCategoryViewModel> Categories { get; set; }
         = new List<SelectProjectCategoryViewModel>();
-
-    //public ICollection<ProjectUsersViewModel> Users { get; set; }
-    //    = new HashSet<ProjectUsersViewModel>();
-
 }

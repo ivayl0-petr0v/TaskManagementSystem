@@ -224,6 +224,7 @@ namespace TaskManagementSystem.Services.Core
             }
         }
 
+        //Helper Methods
         private async Task<Project?> GetCurrentProject(int id)
         {
             return await dbContext

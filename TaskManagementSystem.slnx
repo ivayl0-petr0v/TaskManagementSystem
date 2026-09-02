@@ -1,10 +1,14 @@
 <Solution>
   <Folder Name="/Data/">
+    <Project Path="TaskManagementSystem.Data.Common/TaskManagementSystem.Data.Common.csproj" Id="2f7cada2-2100-4db3-9e39-8e40fb97d5d8" />
     <Project Path="TaskManagementSystem.Data.Models/TaskManagementSystem.Data.Models.csproj" />
     <Project Path="TaskManagementSystem.Data/TaskManagementSystem.Data.csproj" />
   </Folder>
   <Folder Name="/Services/">
     <Project Path="TaskManagementSystem.Services.Core/TaskManagementSystem.Services.Core.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="TaskManagementSystem.Services.Tests/TaskManagementSystem.Services.Tests.csproj" Id="8b14ae17-501d-44e3-b968-5a1c6fd8073a" />
   </Folder>
   <Folder Name="/Web/">
     <Project Path="TaskManagementSystem.ViewModels/TaskManagementSystem.ViewModels.csproj" />

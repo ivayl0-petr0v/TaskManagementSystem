@@ -21,4 +21,9 @@
     <ProjectReference Include="..\TaskManagementSystem.GCommon\TaskManagementSystem.GCommon.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Configurations\Roles\" />
+    <Folder Include="Repository\Contracts\" />
+  </ItemGroup>
+
 </Project>

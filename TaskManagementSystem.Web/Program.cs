@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Data.Models;
+using TaskManagementSystem.Data.Repository;
+using TaskManagementSystem.Data.Repository.Contracts;
 using TaskManagementSystem.Services.Core;
 using TaskManagementSystem.Services.Core.Interfaces;
 using TaskManagementSystem.Web.Data;
@@ -37,6 +39,8 @@ namespace TaskManagementSystem.Web
             builder.Logging.AddDebug();
 
             builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             WebApplication app = builder.Build();
 

@@ -4,7 +4,7 @@ using TaskManagementSystem.Data.Models;
 
 namespace TaskManagementSystem.Data.Configurations
 {
-    internal class ProjectConfiguration : IEntityTypeConfiguration<Project>
+    public class ProjectConfiguration : IEntityTypeConfiguration<Project>
     {
         public void Configure(EntityTypeBuilder<Project> builder)
         {

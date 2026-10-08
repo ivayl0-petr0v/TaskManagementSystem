@@ -4,29 +4,32 @@ using TaskManagementSystem.Data.Models;
 using TaskManagementSystem.Data.Repository.Contracts;
 using TaskManagementSystem.Services.Core.Interfaces;
 using TaskManagementSystem.ViewModels.Project;
+using static TaskManagementSystem.GCommon.ApplicationConstants;
 
 namespace TaskManagementSystem.Services.Core
 {
-    using static TaskManagementSystem.GCommon.ApplicationConstants;
-
     public class ProjectService : IProjectService
     {
-        private readonly IBaseRepository<Project> projectsBaseRepository;
-        private readonly IBaseRepository<Category> categoriesBaseRepository;
-        private readonly IBaseRepository<Status> statusesBaseRepository;
         private readonly IUnitOfWork unitOfWork;
+        private readonly IProjectRepository projectRepository;
+        private readonly IStatusRepository statusRepository;
+        private readonly ICategoryRepository categoryRepository;
 
-        public ProjectService(IBaseRepository<Project> projectsBaseRepository, IBaseRepository<Category> categoriesBaseRepository, IBaseRepository<Status> statusesBaseRepository, IUnitOfWork unitOfWork)
+        public ProjectService(
+            IUnitOfWork unitOfWork,
+            IProjectRepository projectRepository,
+            IStatusRepository statusRepository,
+            ICategoryRepository categoryRepository)
         {
-            this.projectsBaseRepository = projectsBaseRepository;
-            this.categoriesBaseRepository = categoriesBaseRepository;
-            this.statusesBaseRepository = statusesBaseRepository;
             this.unitOfWork = unitOfWork;
+            this.projectRepository = projectRepository;
+            this.statusRepository = statusRepository;
+            this.categoryRepository = categoryRepository;
         }
 
         private async Task<IEnumerable<SelectProjectStatusViewModel>> GetSelectProjectStatusesAsync()
         {
-            return await statusesBaseRepository
+            return await statusRepository
                 .AllAsNoTracking()
                 .Select(s => new SelectProjectStatusViewModel
                 {
@@ -38,7 +41,7 @@ namespace TaskManagementSystem.Services.Core
 
         private async Task<IEnumerable<SelectProjectCategoryViewModel>> GetSelectProjectCategoriesAsync()
         {
-            return await categoriesBaseRepository
+            return await categoryRepository
                 .AllAsNoTracking()
                 .Select(c => new SelectProjectCategoryViewModel
                 {
@@ -50,8 +53,7 @@ namespace TaskManagementSystem.Services.Core
 
         private async Task<Project?> FindProjectById(int id)
         {
-            return await projectsBaseRepository
-                .GetByIdAsync(id);
+            return await projectRepository.GetByIdAsync(id);
         }
 
         public async Task<ProjectInputModel> GetProjectForCreateAsync()
@@ -65,7 +67,7 @@ namespace TaskManagementSystem.Services.Core
 
         private async Task<Project?> GetCurrentProject(int id)
         {
-            return await projectsBaseRepository
+            return await projectRepository
                 .AllAsNoTracking()
                 .Include(p => p.User)
                 .Include(p => p.Category)
@@ -75,10 +77,10 @@ namespace TaskManagementSystem.Services.Core
 
         public async Task<int> CreateProjectAsync(ProjectInputModel inputModel, string currentUserId)
         {
-            bool statusExists = await statusesBaseRepository
+            bool statusExists = await statusRepository
                 .All()
                 .AnyAsync(s => s.Id == inputModel.StatusId);
-            bool categoryExists = await categoriesBaseRepository
+            bool categoryExists = await categoryRepository
                 .All()
                 .AnyAsync(c => c.Id == inputModel.CategoryId);
 
@@ -97,7 +99,7 @@ namespace TaskManagementSystem.Services.Core
                 UserId = currentUserId
             };
 
-            await projectsBaseRepository.AddAsync(project);
+            await projectRepository.AddAsync(project);
             await unitOfWork.SaveChangesAsync();
 
             return project.Id;
@@ -105,7 +107,7 @@ namespace TaskManagementSystem.Services.Core
 
         public async Task<IEnumerable<ProjectAllViewModel>> GetAllProjectsAsync()
         {
-            return await projectsBaseRepository.AllAsNoTracking()
+            return await projectRepository.AllAsNoTracking()
                     .OrderBy(p => p.Title)
                     .ThenBy(p => p.DueDateTime)
                     .Select(p => new ProjectAllViewModel
@@ -140,7 +142,7 @@ namespace TaskManagementSystem.Services.Core
                 DueDate = project.DueDateTime.ToString(DateFormat, CultureInfo.InvariantCulture),
                 Status = project.Status.Name,
                 UserFullName = project.User.UserFullName,
-                IsOwner = currentUserId?.ToLowerInvariant() == project.UserId.ToLowerInvariant(),
+                IsOwner = project.UserId.Equals(currentUserId, StringComparison.InvariantCultureIgnoreCase),
                 IsCompleted = project.Status.Name == "Completed"
             };
         }
@@ -149,12 +151,7 @@ namespace TaskManagementSystem.Services.Core
         {
             Project? project = await FindProjectById(id);
 
-            if (project == null || project.UserId != currentUserId)
-            {
-                return null;
-            }
-
-            if (project.UserId.ToLowerInvariant() != currentUserId.ToLowerInvariant())
+            if (project == null || !project.UserId.Equals(currentUserId, StringComparison.InvariantCultureIgnoreCase))
             {
                 return null;
             }
@@ -181,7 +178,7 @@ namespace TaskManagementSystem.Services.Core
                 throw new ArgumentException("Project not found");
             }
 
-            if (project.UserId.ToLowerInvariant() != currentUserId.ToLowerInvariant())
+            if (!project.UserId.Equals(currentUserId, StringComparison.InvariantCultureIgnoreCase))
             {
                 throw new UnauthorizedAccessException("You are not the owner of this project.");
             }
@@ -192,13 +189,13 @@ namespace TaskManagementSystem.Services.Core
             project.StatusId = inputModel.StatusId;
             project.CategoryId = inputModel.CategoryId;
 
-            projectsBaseRepository.Update(project);
+            projectRepository.Update(project);
             await unitOfWork.SaveChangesAsync();
         }
 
         public async Task<ProjectDeleteViewModel?> GetProjectForDeleteAsync(int id, string currentUserId)
         {
-            Project? project = await projectsBaseRepository
+            Project? project = await projectRepository
                 .AllAsNoTracking()
                 .SingleOrDefaultAsync(p => p.Id == id);
 
@@ -207,7 +204,7 @@ namespace TaskManagementSystem.Services.Core
                 return null;
             }
 
-            if (project.UserId.ToLowerInvariant() != currentUserId.ToLowerInvariant())
+            if (!project.UserId.Equals(currentUserId, StringComparison.InvariantCultureIgnoreCase))
             {
                 return null;
             }
@@ -229,13 +226,13 @@ namespace TaskManagementSystem.Services.Core
                 throw new UnauthorizedAccessException("You are not the owner of this project.");
             }
 
-            projectsBaseRepository.Remove(project);
+            projectRepository.Remove(project);
             await unitOfWork.SaveChangesAsync();
         }
 
         public async Task CompleteProjectAsync(int id, string currentUserId)
         {
-            Project? project = await projectsBaseRepository
+            Project? project = await projectRepository
                 .All()
                 .Include(p => p.Status)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -252,14 +249,14 @@ namespace TaskManagementSystem.Services.Core
 
             if (project.Status?.Name != "Completed")
             {
-                Status? completedStatus = await statusesBaseRepository
+                Status? completedStatus = await statusRepository
                     .All()
                     .FirstOrDefaultAsync(s => s.Name == "Completed");
 
                 if (completedStatus != null)
                 {
                     project.Status = completedStatus;
-                    projectsBaseRepository.Update(project);
+                    projectRepository.Update(project);
                     await unitOfWork.SaveChangesAsync();
                 }
             }

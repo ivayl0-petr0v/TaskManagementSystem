@@ -38,10 +38,15 @@ namespace TaskManagementSystem.Web
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
 
-            builder.Services.AddScoped<IProjectService, ProjectService>();
-            builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            //Register Repositories
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IStatusRepository, StatusRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            //Register Services
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+            
             WebApplication app = builder.Build();
 
             // Configure the HTTP request pipeline.

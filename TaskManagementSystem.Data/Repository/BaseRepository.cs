@@ -4,33 +4,34 @@ using TaskManagementSystem.Web.Data;
 
 namespace TaskManagementSystem.Data.Repository
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity>
+        where TEntity : class
     {
         private readonly TaskManagementDbContext dbContext;
-        private readonly DbSet<T> dbSet;
+        private readonly DbSet<TEntity> dbSet;
 
         public BaseRepository(TaskManagementDbContext dbContext)
         {
             this.dbContext = dbContext;
-            this.dbSet = dbContext.Set<T>();
+            dbSet = dbContext.Set<TEntity>();
         }
 
-        public IQueryable<T> All()
+        public IQueryable<TEntity> All()
             => dbSet;
 
-        public IQueryable<T> AllAsNoTracking()
+        public IQueryable<TEntity> AllAsNoTracking()
             => dbSet.AsNoTracking();
 
-        public async Task<T?> GetByIdAsync(object id)
+        public async Task<TEntity?> GetByIdAsync(object id)
             => await dbSet.FindAsync(id);
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(TEntity entity)
             => await dbSet.AddAsync(entity);
 
-        public void Update(T entity)
+        public void Update(TEntity entity)
             => dbSet.Update(entity);
 
-        public void Remove(T entity)
+        public void Remove(TEntity entity)
             => dbSet.Remove(entity);
     }
 }

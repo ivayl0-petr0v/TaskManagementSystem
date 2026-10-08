@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Configurations\Roles\" />
-    <Folder Include="Repository\Contracts\" />
   </ItemGroup>
 
 </Project>

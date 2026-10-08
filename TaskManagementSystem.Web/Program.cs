@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Data.Models;
+using TaskManagementSystem.Data.Repository;
+using TaskManagementSystem.Data.Repository.Contracts;
 using TaskManagementSystem.Services.Core;
 using TaskManagementSystem.Services.Core.Interfaces;
 using TaskManagementSystem.Web.Data;
@@ -36,8 +38,15 @@ namespace TaskManagementSystem.Web
             builder.Logging.AddConsole();
             builder.Logging.AddDebug();
 
-            builder.Services.AddScoped<IProjectService, ProjectService>();
+            //Register Repositories
+            builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+            builder.Services.AddScoped<IStatusRepository, StatusRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            //Register Services
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+            
             WebApplication app = builder.Build();
 
             // Configure the HTTP request pipeline.

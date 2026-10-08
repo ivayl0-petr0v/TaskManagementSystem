@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Data.Configurations;
 using TaskManagementSystem.Data.Models;
-using TaskManagementSystem.Web.Data.Migrations;
 
 namespace TaskManagementSystem.Web.Data
 {

@@ -30,7 +30,7 @@ namespace TaskManagementSystem.Services.Core
         private async Task<IEnumerable<SelectProjectStatusViewModel>> GetSelectProjectStatusesAsync()
         {
             return await statusRepository
-                .AllAsNoTracking()
+                .GetAllStatusesAsNoTracking()
                 .Select(s => new SelectProjectStatusViewModel
                 {
                     Id = s.Id,
@@ -42,7 +42,7 @@ namespace TaskManagementSystem.Services.Core
         private async Task<IEnumerable<SelectProjectCategoryViewModel>> GetSelectProjectCategoriesAsync()
         {
             return await categoryRepository
-                .AllAsNoTracking()
+                .GetAllCategoriesAsNoTracking()
                 .Select(c => new SelectProjectCategoryViewModel
                 {
                     Id = c.Id,
@@ -53,7 +53,8 @@ namespace TaskManagementSystem.Services.Core
 
         private async Task<Project?> FindProjectById(int id)
         {
-            return await projectRepository.GetByIdAsync(id);
+            return await projectRepository
+                .GetByIdAsync(id);
         }
 
         public async Task<ProjectInputModel> GetProjectForCreateAsync()
@@ -68,28 +69,23 @@ namespace TaskManagementSystem.Services.Core
         private async Task<Project?> GetCurrentProject(int id)
         {
             return await projectRepository
-                .AllAsNoTracking()
-                .Include(p => p.User)
-                .Include(p => p.Category)
-                .Include(p => p.Status)
-                .SingleOrDefaultAsync(p => p.Id == id);
+                .GetByIdWithDetailsAsync(id);
         }
 
         public async Task<int> CreateProjectAsync(ProjectInputModel inputModel, string currentUserId)
         {
             bool statusExists = await statusRepository
-                .All()
-                .AnyAsync(s => s.Id == inputModel.StatusId);
+                .ExistsStatusByIdAsync(inputModel.StatusId);
+
             bool categoryExists = await categoryRepository
-                .All()
-                .AnyAsync(c => c.Id == inputModel.CategoryId);
+                .ExistsCategoryByIdAsync(inputModel.CategoryId);
 
             if (!statusExists || !categoryExists)
             {
                 throw new ArgumentException("Invalid status and category.");
             }
 
-            Project project = new Project
+            Project project = new()
             {
                 Title = inputModel.Title,
                 Description = inputModel.Description,
@@ -107,9 +103,8 @@ namespace TaskManagementSystem.Services.Core
 
         public async Task<IEnumerable<ProjectAllViewModel>> GetAllProjectsAsync()
         {
-            return await projectRepository.AllAsNoTracking()
-                    .OrderBy(p => p.Title)
-                    .ThenBy(p => p.DueDateTime)
+            return await projectRepository
+                    .GetAllForListAsNoTracking()
                     .Select(p => new ProjectAllViewModel
                     {
                         Id = p.Id,
@@ -195,9 +190,8 @@ namespace TaskManagementSystem.Services.Core
 
         public async Task<ProjectDeleteViewModel?> GetProjectForDeleteAsync(int id, string currentUserId)
         {
-            Project? project = await projectRepository
-                .AllAsNoTracking()
-                .SingleOrDefaultAsync(p => p.Id == id);
+            Project? project = await projectRepository.
+                GetByIdAsNoTrackingAsync(id);
 
             if (project == null)
             {
@@ -233,14 +227,7 @@ namespace TaskManagementSystem.Services.Core
         public async Task CompleteProjectAsync(int id, string currentUserId)
         {
             Project? project = await projectRepository
-                .All()
-                .Include(p => p.Status)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (project == null)
-            {
-                throw new ArgumentException("Project not found");
-            }
+                .GetByIdWithStatusAsync(id) ?? throw new ArgumentException("Project not found");
 
             if (!project.UserId.Equals(currentUserId, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -250,8 +237,7 @@ namespace TaskManagementSystem.Services.Core
             if (project.Status?.Name != "Completed")
             {
                 Status? completedStatus = await statusRepository
-                    .All()
-                    .FirstOrDefaultAsync(s => s.Name == "Completed");
+                    .GetByStatusNameAsync();
 
                 if (completedStatus != null)
                 {

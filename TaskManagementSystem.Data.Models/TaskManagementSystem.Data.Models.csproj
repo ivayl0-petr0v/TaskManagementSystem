@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TaskManagementSystem.GCommon\TaskManagementSystem.GCommon.csproj" />
+    <ProjectReference Include="..\TaskManagementSystem.GCommon\TaskManagementSystem.GloballyCommon.csproj" />
   </ItemGroup>
 
 </Project>

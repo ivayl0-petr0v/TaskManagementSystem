@@ -1,6 +1,6 @@
-﻿namespace TaskManagementSystem.ViewModels.Project
+namespace TaskManagementSystem.ViewModels.Project
 {
-    public class ProjectDetailsViewModel : ProjectAllViewModel
+    public class ProjectDetailsViewModel : ProjectListItemViewModel
     {
         public bool IsOwner { get; set; }
 

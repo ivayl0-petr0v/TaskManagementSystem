@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using TaskManagementSystem.Services.Core.Contracts.Project;
 using TaskManagementSystem.Services.Core.Interfaces;
 using TaskManagementSystem.ViewModels.Project;
 
@@ -21,10 +21,11 @@ namespace TaskManagementSystem.Web.Controllers
         {
             string currentUserId = GetCurrentUserId()!;
 
-            IEnumerable<ProjectAllViewModel> allProjects = await projectService
-                .GetAllProjectsAsync();
+            IEnumerable<ProjectListItemViewModel> allProjects = (await projectService
+                .GetAllProjectsAsync())
+                .Select(MapProjectListItem);
 
-            ProjectListViewModel? model = new ProjectListViewModel
+            ProjectListViewModel model = new()
             {
                 MyProjects = allProjects.Where(p => p.UserId == currentUserId),
                 OtherProjects = allProjects.Where(p => p.UserId != currentUserId)
@@ -36,28 +37,35 @@ namespace TaskManagementSystem.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ProjectInputModel model = await projectService
-                .GetProjectForCreateAsync();
+            ProjectCreateDataDto createData = await projectService.GetProjectCreateDataAsync();
+            ProjectCreateViewModel model = MapProjectCreateViewModel(createData);
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ProjectInputModel inputModel)
+        public async Task<IActionResult> Create(ProjectCreateViewModel inputModel)
         {
             if (!ModelState.IsValid)
             {
-                ProjectInputModel? reloadModel = await projectService
-                    .GetProjectForCreateAsync();
-
-                inputModel.Statuses = reloadModel.Statuses;
-                inputModel.Categories = reloadModel.Categories;
+                ProjectCreateDataDto reloadModel = await projectService.GetProjectCreateDataAsync();
+                inputModel.Statuses = reloadModel.Statuses.Select(MapLookup);
+                inputModel.Categories = reloadModel.Categories.Select(MapLookup);
                 return View(inputModel);
             }
 
             try
             {
-                await projectService.CreateProjectAsync(inputModel, GetCurrentUserId()!);
+                CreateProjectRequest request = new()
+                {
+                    Title = inputModel.Title,
+                    Description = inputModel.Description,
+                    DueDate = inputModel.DueDate,
+                    StatusId = inputModel.StatusId,
+                    CategoryId = inputModel.CategoryId
+                };
+
+                await projectService.CreateProjectAsync(request, GetCurrentUserId()!);
                 logger.LogInformation("Project created successfully.");
                 TempData["SuccessMessage"] = "Project created successfully.";
                 return RedirectToAction(nameof(All));
@@ -66,11 +74,9 @@ namespace TaskManagementSystem.Web.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Invalid Category or Status.");
 
-                ProjectInputModel? reloadModel = await projectService
-                    .GetProjectForCreateAsync();
-
-                inputModel.Statuses = reloadModel.Statuses;
-                inputModel.Categories = reloadModel.Categories;
+                ProjectCreateDataDto reloadModel = await projectService.GetProjectCreateDataAsync();
+                inputModel.Statuses = reloadModel.Statuses.Select(MapLookup);
+                inputModel.Categories = reloadModel.Categories.Select(MapLookup);
                 return View(inputModel);
             }
             catch (Exception ex)
@@ -78,11 +84,9 @@ namespace TaskManagementSystem.Web.Controllers
                 logger.LogError(ex, "Error creating project.");
                 ModelState.AddModelError(string.Empty, "Unexpected error occurred.");
 
-                ProjectInputModel? reloadModel = await projectService
-                    .GetProjectForCreateAsync();
-
-                inputModel.Statuses = reloadModel.Statuses;
-                inputModel.Categories = reloadModel.Categories;
+                ProjectCreateDataDto reloadModel = await projectService.GetProjectCreateDataAsync();
+                inputModel.Statuses = reloadModel.Statuses.Select(MapLookup);
+                inputModel.Categories = reloadModel.Categories.Select(MapLookup);
                 return View(inputModel);
             }
         }
@@ -90,15 +94,15 @@ namespace TaskManagementSystem.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            ProjectDetailsViewModel? model = await projectService
-                .GetProjectDetailsByIdAsync(id, GetCurrentUserId()!);
+            ProjectDetailsDto? dto = await projectService.GetProjectDetailsByIdAsync(id, GetCurrentUserId()!);
 
-            if (model == null)
+            if (dto == null)
             {
                 TempData["ErrorMessage"] = "Project not found.";
                 return RedirectToAction(nameof(All));
             }
 
+            ProjectDetailsViewModel model = MapProjectDetails(dto);
             return View(model);
         }
 
@@ -107,8 +111,7 @@ namespace TaskManagementSystem.Web.Controllers
         {
             try
             {
-                await projectService
-                    .CompleteProjectAsync(id, GetCurrentUserId()!);
+                await projectService.CompleteProjectAsync(id, GetCurrentUserId()!);
 
                 TempData["SuccessMessage"] = "Project marked as completed.";
                 return RedirectToAction(nameof(Details), new { id });
@@ -128,35 +131,55 @@ namespace TaskManagementSystem.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            ProjectEditInputModel? model = await projectService
-                .GetProjectForEditAsync(id, GetCurrentUserId()!);
+            UpdateProjectRequest? editRequest = await projectService.GetProjectForEditAsync(id, GetCurrentUserId()!);
 
-            if (model == null)
+            if (editRequest == null)
             {
                 TempData["ErrorMessage"] = "Project not found or you are not authorized.";
                 return RedirectToAction(nameof(All));
             }
 
+            ProjectCreateDataDto createData = await projectService.GetProjectCreateDataAsync();
+            ProjectEditViewModel model = new()
+            {
+                Id = editRequest.Id,
+                Title = editRequest.Title,
+                Description = editRequest.Description,
+                DueDate = editRequest.DueDate,
+                StatusId = editRequest.StatusId,
+                CategoryId = editRequest.CategoryId,
+                Statuses = createData.Statuses.Select(MapLookup),
+                Categories = createData.Categories.Select(MapLookup)
+            };
+
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit([FromRoute] int id, ProjectEditInputModel inputModel)
+        public async Task<IActionResult> Edit([FromRoute] int id, ProjectEditViewModel inputModel)
         {
             if (!ModelState.IsValid)
             {
-                ProjectInputModel? reloadModel = await projectService
-                    .GetProjectForCreateAsync();
+                ProjectCreateDataDto reloadModel = await projectService.GetProjectCreateDataAsync();
 
-                inputModel.Statuses = reloadModel.Statuses;
-                inputModel.Categories = reloadModel.Categories;
+                inputModel.Statuses = reloadModel.Statuses.Select(MapLookup);
+                inputModel.Categories = reloadModel.Categories.Select(MapLookup);
                 return View(inputModel);
             }
 
             try
             {
-                await projectService
-                    .EditProjectAsync(id, inputModel, GetCurrentUserId()!);
+                UpdateProjectRequest request = new()
+                {
+                    Id = inputModel.Id,
+                    Title = inputModel.Title,
+                    Description = inputModel.Description,
+                    DueDate = inputModel.DueDate,
+                    StatusId = inputModel.StatusId,
+                    CategoryId = inputModel.CategoryId
+                };
+
+                await projectService.EditProjectAsync(id, request, GetCurrentUserId()!);
 
                 TempData["SuccessMessage"] = "Project updated successfully.";
                 return RedirectToAction(nameof(Details), new { id });
@@ -170,11 +193,9 @@ namespace TaskManagementSystem.Web.Controllers
             {
                 logger.LogError(ex, "Error editing project.");
 
-                ProjectInputModel? reloadModel = await projectService
-                    .GetProjectForCreateAsync();
-
-                inputModel.Statuses = reloadModel.Statuses;
-                inputModel.Categories = reloadModel.Categories;
+                ProjectCreateDataDto reloadModel = await projectService.GetProjectCreateDataAsync();
+                inputModel.Statuses = reloadModel.Statuses.Select(MapLookup);
+                inputModel.Categories = reloadModel.Categories.Select(MapLookup);
                 return View(inputModel);
             }
         }
@@ -182,14 +203,20 @@ namespace TaskManagementSystem.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var model = await projectService
-                .GetProjectForDeleteAsync(id, GetCurrentUserId()!);
+            ProjectDeleteDto? dto = await projectService.GetProjectForDeleteAsync(id, GetCurrentUserId()!);
 
-            if (model == null)
+            if (dto == null)
             {
                 TempData["ErrorMessage"] = "Project not found or access denied.";
                 return RedirectToAction(nameof(All));
             }
+
+            ProjectDeleteViewModel model = new()
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Description = dto.Description
+            };
 
             return View(model);
         }
@@ -199,8 +226,7 @@ namespace TaskManagementSystem.Web.Controllers
         {
             try
             {
-                await projectService
-                    .DeleteProjectAsync(id, GetCurrentUserId()!);
+                await projectService.DeleteProjectAsync(id, GetCurrentUserId()!);
 
                 TempData["SuccessMessage"] = "Project deleted successfully.";
                 return RedirectToAction(nameof(All));
@@ -216,6 +242,57 @@ namespace TaskManagementSystem.Web.Controllers
                 TempData["ErrorMessage"] = "Delete failed.";
                 return RedirectToAction(nameof(Details), new { id });
             }
+        }
+
+        private static ProjectCreateViewModel MapProjectCreateViewModel(ProjectCreateDataDto createData)
+        {
+            return new ProjectCreateViewModel
+            {
+                DueDate = DateTime.Today,
+                Statuses = createData.Statuses.Select(MapLookup),
+                Categories = createData.Categories.Select(MapLookup)
+            };
+        }
+
+        private static LookupViewModel MapLookup(LookupDto lookupDto)
+        {
+            return new LookupViewModel
+            {
+                Id = lookupDto.Id,
+                Name = lookupDto.Name
+            };
+        }
+
+        private static ProjectListItemViewModel MapProjectListItem(ProjectListItemDto dto)
+        {
+            return new ProjectListItemViewModel
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Description = dto.Description,
+                DueDate = dto.DueDate,
+                Status = dto.Status,
+                Category = dto.Category,
+                UserId = dto.UserId,
+                UserFullName = dto.UserFullName
+            };
+        }
+
+        private static ProjectDetailsViewModel MapProjectDetails(ProjectDetailsDto dto)
+        {
+            return new ProjectDetailsViewModel
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Description = dto.Description,
+                DueDate = dto.DueDate,
+                Status = dto.Status,
+                Category = dto.Category,
+                UserId = dto.UserId,
+                UserFullName = dto.UserFullName,
+                IsOwner = dto.IsOwner,
+                IsCompleted = dto.IsCompleted
+            };
         }
     }
 }

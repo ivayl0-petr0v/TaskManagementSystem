@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaskManagementSystem.Data.Models\TaskManagementSystem.Data.Models.csproj" />
-    <ProjectReference Include="..\TaskManagementSystem.GCommon\TaskManagementSystem.GCommon.csproj" />
+    <ProjectReference Include="..\TaskManagementSystem.GCommon\TaskManagementSystem.GloballyCommon.csproj" />
   </ItemGroup>
 
 </Project>

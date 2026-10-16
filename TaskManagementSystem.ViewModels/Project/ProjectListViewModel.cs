@@ -2,10 +2,8 @@
 {
     public class ProjectListViewModel
     {
-        public IEnumerable<ProjectAllViewModel> MyProjects { get; set; }
-            = new List<ProjectAllViewModel>();
+        public IEnumerable<ProjectListItemViewModel> MyProjects { get; set; } = [];
 
-        public IEnumerable<ProjectAllViewModel> OtherProjects { get; set; }
-            = new List<ProjectAllViewModel>();
+        public IEnumerable<ProjectListItemViewModel> OtherProjects { get; set; } = [];
     }
 }

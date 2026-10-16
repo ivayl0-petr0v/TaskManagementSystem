@@ -1,6 +1,6 @@
-﻿namespace TaskManagementSystem.ViewModels.Project
+namespace TaskManagementSystem.ViewModels.Project
 {
-    public class SelectProjectCategoryViewModel
+    public class LookupViewModel
     {
         public int Id { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using static TaskManagementSystem.GCommon.ValidationConstants;
+using static TaskManagementSystem.GloballyCommon.ValidationConstants;
 
 namespace TaskManagementSystem.Data.Models
 {

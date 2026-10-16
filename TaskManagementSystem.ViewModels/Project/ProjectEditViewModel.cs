@@ -1,6 +1,6 @@
 ﻿namespace TaskManagementSystem.ViewModels.Project
 {
-    public class ProjectEditInputModel : ProjectInputModel
+    public class ProjectEditViewModel : ProjectCreateViewModel
     {
         public int Id { get; set; }
     }

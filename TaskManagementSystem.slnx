@@ -5,6 +5,7 @@
     <Project Path="TaskManagementSystem.Data/TaskManagementSystem.Data.csproj" />
   </Folder>
   <Folder Name="/Services/">
+    <Project Path="TaskManagementSystem.Services.Core.Contracts/TaskManagementSystem.Services.Core.Contracts.csproj" Id="cf60a0e3-07c8-4a0a-a9b7-929c73387f14" />
     <Project Path="TaskManagementSystem.Services.Core/TaskManagementSystem.Services.Core.csproj" />
   </Folder>
   <Folder Name="/Tests/">
@@ -14,5 +15,5 @@
     <Project Path="TaskManagementSystem.ViewModels/TaskManagementSystem.ViewModels.csproj" />
     <Project Path="TaskManagementSystem.Web/TaskManagementSystem.Web.csproj" />
   </Folder>
-  <Project Path="TaskManagementSystem.GCommon/TaskManagementSystem.GCommon.csproj" />
+  <Project Path="TaskManagementSystem.GCommon/TaskManagementSystem.GloballyCommon.csproj" />
 </Solution>

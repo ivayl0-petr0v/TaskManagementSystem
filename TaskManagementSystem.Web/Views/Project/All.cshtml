@@ -32,7 +32,7 @@
 			}
 			else
 			{
-				@foreach (ProjectAllViewModel myProject in Model.MyProjects)
+				@foreach (ProjectListItemViewModel myProject in Model.MyProjects)
 				{
 					<div class="col-xl-3 col-lg-4 col-md-6 mb-4">
 						<partial name="_ProjectCardPartial" model="myProject" />
@@ -56,7 +56,7 @@
 			}
 			else
 			{
-				@foreach (ProjectAllViewModel otherProject in Model.OtherProjects)
+				@foreach (ProjectListItemViewModel otherProject in Model.OtherProjects)
 				{
 					<div class="col-xl-3 col-lg-4 col-md-6 mb-4">
 						<partial name="_ProjectCardPartial" model="otherProject" />

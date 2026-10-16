@@ -1,6 +1,4 @@
-﻿using TaskManagementSystem.Data.Models;
-
-namespace TaskManagementSystem.ViewModels.Project
+﻿namespace TaskManagementSystem.ViewModels.Project
 {
     public class SelectProjectUserViewModel
     {

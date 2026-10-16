@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static TaskManagementSystem.GCommon.ValidationConstants;
+using static TaskManagementSystem.GloballyCommon.ValidationConstants;
 
 namespace TaskManagementSystem.Data.Models
 {

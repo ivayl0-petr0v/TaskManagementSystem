@@ -1,4 +1,4 @@
-﻿namespace TaskManagementSystem.GCommon
+﻿namespace TaskManagementSystem.GloballyCommon
 {
     public static class ApplicationConstants
     {

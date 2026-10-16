@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 using TaskManagementSystem.Data.Models;
 using TaskManagementSystem.Data.Repository.Contracts;
+using TaskManagementSystem.Services.Core.Contracts.Project;
 using TaskManagementSystem.Services.Core.Interfaces;
-using TaskManagementSystem.ViewModels.Project;
-using static TaskManagementSystem.GCommon.ApplicationConstants;
 
 namespace TaskManagementSystem.Services.Core
 {
@@ -27,11 +25,11 @@ namespace TaskManagementSystem.Services.Core
             this.categoryRepository = categoryRepository;
         }
 
-        private async Task<IEnumerable<SelectProjectStatusViewModel>> GetSelectProjectStatusesAsync()
+        private async Task<IEnumerable<LookupDto>> GetSelectProjectStatusesAsync()
         {
             return await statusRepository
-                .AllAsNoTracking()
-                .Select(s => new SelectProjectStatusViewModel
+                .GetAllStatusesAsNoTracking()
+                .Select(s => new LookupDto
                 {
                     Id = s.Id,
                     Name = s.Name
@@ -39,11 +37,11 @@ namespace TaskManagementSystem.Services.Core
                 .ToArrayAsync();
         }
 
-        private async Task<IEnumerable<SelectProjectCategoryViewModel>> GetSelectProjectCategoriesAsync()
+        private async Task<IEnumerable<LookupDto>> GetSelectProjectCategoriesAsync()
         {
             return await categoryRepository
-                .AllAsNoTracking()
-                .Select(c => new SelectProjectCategoryViewModel
+                .GetAllCategoriesAsNoTracking()
+                .Select(c => new LookupDto
                 {
                     Id = c.Id,
                     Name = c.Name
@@ -53,12 +51,13 @@ namespace TaskManagementSystem.Services.Core
 
         private async Task<Project?> FindProjectById(int id)
         {
-            return await projectRepository.GetByIdAsync(id);
+            return await projectRepository
+                .GetByIdAsync(id);
         }
 
-        public async Task<ProjectInputModel> GetProjectForCreateAsync()
+        public async Task<ProjectCreateDataDto> GetProjectCreateDataAsync()
         {
-            return new ProjectInputModel
+            return new ProjectCreateDataDto
             {
                 Statuses = await GetSelectProjectStatusesAsync(),
                 Categories = await GetSelectProjectCategoriesAsync()
@@ -68,34 +67,29 @@ namespace TaskManagementSystem.Services.Core
         private async Task<Project?> GetCurrentProject(int id)
         {
             return await projectRepository
-                .AllAsNoTracking()
-                .Include(p => p.User)
-                .Include(p => p.Category)
-                .Include(p => p.Status)
-                .SingleOrDefaultAsync(p => p.Id == id);
+                .GetByIdWithDetailsAsync(id);
         }
 
-        public async Task<int> CreateProjectAsync(ProjectInputModel inputModel, string currentUserId)
+        public async Task<int> CreateProjectAsync(CreateProjectRequest request, string currentUserId)
         {
             bool statusExists = await statusRepository
-                .All()
-                .AnyAsync(s => s.Id == inputModel.StatusId);
+                .ExistsStatusByIdAsync(request.StatusId);
+
             bool categoryExists = await categoryRepository
-                .All()
-                .AnyAsync(c => c.Id == inputModel.CategoryId);
+                .ExistsCategoryByIdAsync(request.CategoryId);
 
             if (!statusExists || !categoryExists)
             {
                 throw new ArgumentException("Invalid status and category.");
             }
 
-            Project project = new Project
+            Project project = new()
             {
-                Title = inputModel.Title,
-                Description = inputModel.Description,
-                DueDateTime = inputModel.DueDate,
-                StatusId = inputModel.StatusId,
-                CategoryId = inputModel.CategoryId,
+                Title = request.Title,
+                Description = request.Description,
+                DueDateTime = request.DueDate,
+                StatusId = request.StatusId,
+                CategoryId = request.CategoryId,
                 UserId = currentUserId
             };
 
@@ -105,17 +99,16 @@ namespace TaskManagementSystem.Services.Core
             return project.Id;
         }
 
-        public async Task<IEnumerable<ProjectAllViewModel>> GetAllProjectsAsync()
+        public async Task<IEnumerable<ProjectListItemDto>> GetAllProjectsAsync()
         {
-            return await projectRepository.AllAsNoTracking()
-                    .OrderBy(p => p.Title)
-                    .ThenBy(p => p.DueDateTime)
-                    .Select(p => new ProjectAllViewModel
+            return await projectRepository
+                    .GetAllForListAsNoTracking()
+                    .Select(p => new ProjectListItemDto
                     {
                         Id = p.Id,
                         Title = p.Title,
                         Description = p.Description,
-                        DueDate = p.DueDateTime.ToString(DateFormat, CultureInfo.InvariantCulture),
+                        DueDate = p.DueDateTime,
                         Status = p.Status.Name,
                         Category = p.Category.Name,
                         UserFullName = p.User.UserFullName,
@@ -124,7 +117,7 @@ namespace TaskManagementSystem.Services.Core
                     .ToListAsync();
         }
 
-        public async Task<ProjectDetailsViewModel?> GetProjectDetailsByIdAsync(int id, string currentUserId)
+        public async Task<ProjectDetailsDto?> GetProjectDetailsByIdAsync(int id, string currentUserId)
         {
             Project? project = await GetCurrentProject(id);
 
@@ -133,13 +126,13 @@ namespace TaskManagementSystem.Services.Core
                 return null;
             }
 
-            return new ProjectDetailsViewModel
+            return new ProjectDetailsDto
             {
                 Id = project.Id,
                 Title = project.Title,
                 Description = project.Description,
                 Category = project.Category.Name,
-                DueDate = project.DueDateTime.ToString(DateFormat, CultureInfo.InvariantCulture),
+                DueDate = project.DueDateTime,
                 Status = project.Status.Name,
                 UserFullName = project.User.UserFullName,
                 IsOwner = project.UserId.Equals(currentUserId, StringComparison.InvariantCultureIgnoreCase),
@@ -147,7 +140,7 @@ namespace TaskManagementSystem.Services.Core
             };
         }
 
-        public async Task<ProjectEditInputModel?> GetProjectForEditAsync(int id, string currentUserId)
+        public async Task<UpdateProjectRequest?> GetProjectForEditAsync(int id, string currentUserId)
         {
             Project? project = await FindProjectById(id);
 
@@ -156,20 +149,18 @@ namespace TaskManagementSystem.Services.Core
                 return null;
             }
 
-            return new ProjectEditInputModel
+            return new UpdateProjectRequest
             {
                 Id = project.Id,
                 Title = project.Title,
                 Description = project.Description,
                 DueDate = project.DueDateTime,
                 StatusId = project.StatusId,
-                CategoryId = project.CategoryId,
-                Statuses = await GetSelectProjectStatusesAsync(),
-                Categories = await GetSelectProjectCategoriesAsync()
+                CategoryId = project.CategoryId
             };
         }
 
-        public async Task EditProjectAsync(int id, ProjectEditInputModel inputModel, string currentUserId)
+        public async Task EditProjectAsync(int id, UpdateProjectRequest inputModel, string currentUserId)
         {
             Project? project = await FindProjectById(id);
 
@@ -193,11 +184,10 @@ namespace TaskManagementSystem.Services.Core
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<ProjectDeleteViewModel?> GetProjectForDeleteAsync(int id, string currentUserId)
+        public async Task<ProjectDeleteDto?> GetProjectForDeleteAsync(int id, string currentUserId)
         {
-            Project? project = await projectRepository
-                .AllAsNoTracking()
-                .SingleOrDefaultAsync(p => p.Id == id);
+            Project? project = await projectRepository.
+                GetByIdAsNoTrackingAsync(id);
 
             if (project == null)
             {
@@ -209,7 +199,7 @@ namespace TaskManagementSystem.Services.Core
                 return null;
             }
 
-            return new ProjectDeleteViewModel
+            return new ProjectDeleteDto
             {
                 Id = project.Id,
                 Title = project.Title,
@@ -233,14 +223,7 @@ namespace TaskManagementSystem.Services.Core
         public async Task CompleteProjectAsync(int id, string currentUserId)
         {
             Project? project = await projectRepository
-                .All()
-                .Include(p => p.Status)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (project == null)
-            {
-                throw new ArgumentException("Project not found");
-            }
+                .GetByIdWithStatusAsync(id) ?? throw new ArgumentException("Project not found");
 
             if (!project.UserId.Equals(currentUserId, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -250,8 +233,7 @@ namespace TaskManagementSystem.Services.Core
             if (project.Status?.Name != "Completed")
             {
                 Status? completedStatus = await statusRepository
-                    .All()
-                    .FirstOrDefaultAsync(s => s.Name == "Completed");
+                    .GetByStatusNameAsync();
 
                 if (completedStatus != null)
                 {

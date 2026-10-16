@@ -1,6 +1,6 @@
-﻿namespace TaskManagementSystem.ViewModels.Project
+﻿namespace TaskManagementSystem.Services.Core.Contracts.Project
 {
-    public class SelectProjectStatusViewModel
+    public class LookupDto
     {
         public int Id { get; set; }
 
